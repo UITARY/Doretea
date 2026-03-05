@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dorotea 99'ers – Barangay Management System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:  #1a2b3c;
+      --blue:  #1565c0;
+      --gold:  #c9930a;
+      --light: #f4f7f6;
+      --white: #ffffff;
+      --red:   #c0392b;
+      --shadow: 0 4px 18px rgba(0,0,0,0.13);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Source Sans 3', sans-serif; background: var(--light); color: #222; min-height: 100vh; }
+    .page { display: none; min-height: 100vh; }
+    #home { display: flex; }
+    #home:target,
+    #register:target,
+    #login:target,
+    #admin-login:target,
+    #dashboard:target,
+    #announcements:target,
+    #forum:target,
+    #clearance:target,
+    #my-clearances:target,
+    #admin:target { display: block; }
+    body:has(#register:target) #home,
+    body:has(#login:target) #home,
+    body:has(#admin-login:target) #home,
+    body:has(#dashboard:target) #home,
+    body:has(#announcements:target) #home,
+    body:has(#forum:target) #home,
+    body:has(#clearance:target) #home,
+    body:has(#my-clearances:target) #home,
+    body:has(#admin:target) #home { display: none; }
+    #appHeader { display: none; }
+    body:has(#dashboard:target) #appHeader,
+    body:has(#announcements:target) #appHeader,
+    body:has(#forum:target) #appHeader,
+    body:has(#clearance:target) #appHeader,
+    body:has(#my-clearances:target) #appHeader,
+    body:has(#admin:target) #appHeader { display: flex; }
+    #appNav { display: none; }
+    body:has(#dashboard:target) #appNav,
+    body:has(#announcements:target) #appNav,
+    body:has(#forum:target) #appNav,
+    body:has(#clearance:target) #appNav,
+    body:has(#my-clearances:target) #appNav,
+    body:has(#admin:target) #appNav { display: flex; }
+    #appHeader {
+      background: var(--navy);
+      color: var(--white);
+      padding: 14px 30px;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      border-bottom: 3px solid rgba(255,255,255,0.2);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-brand { display: flex; align-items: center; gap: 12px; }
+    .header-logo  { width: 46px; height: 46px; object-fit: contain; }
+    #appHeader h1 { font-family: 'Lora', serif; font-size: 1.2rem; letter-spacing: .4px; line-height: 1.3; }
+    #appHeader h1 small { display: block; font-size: .75rem; font-family: 'Source Sans 3', sans-serif; font-weight: 400; opacity: .7; }
+    #appNav {
+      background: #14202e; padding: 0 30px;
+      gap: 2px; flex-wrap: wrap;
+      border-bottom: 2px solid rgba(255,255,255,0.08);
+      position: sticky; top: 75px; z-index: 99;
+    }
+    #appNav a {
+      display: inline-block;
+      color: #b0bec5; padding: 12px 16px; font-size: .9rem;
+      font-family: 'Source Sans 3', sans-serif;
+      text-decoration: none; border-bottom: 3px solid transparent; transition: all .2s;
+    }
+    #appNav a:hover { color: #fff; border-bottom-color: #fff; }
+    #appNav a.logout { margin-left: auto; color: #e57373; }
+    #appNav a.logout:hover { color: #fff; background: rgba(192,57,43,0.2); border-bottom-color: var(--red); }
+    #home {
+      min-height: 100vh;
+      flex-direction: column;
+      background-size: cover; background-position: center; background-attachment: fixed;
+      background-color: #0d1f33;
+    }
+    .land-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(10,25,50,0.6);
+      backdrop-filter: blur(10px);
+      position: sticky; top: 0; z-index: 50;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .land-nav-brand { display: flex; align-items: center; gap: 10px; }
+    .land-nav-logo  { width: 36px; height: 36px; object-fit: contain; }
+    .land-nav-title { font-family: 'Lora', serif; color: #fff; font-size: .95rem; line-height: 1.3; }
+    .land-nav-title small { display: block; font-family: 'Source Sans 3', sans-serif; font-size: .68rem; opacity: .6; font-weight: 400; }
+    .land-nav-links { display: flex; align-items: center; gap: 4px; }
+    .land-nav-links a {
+      color: rgba(255,255,255,0.75); font-size: .88rem; font-weight: 500;
+      padding: 7px 13px; border-radius: 6px; text-decoration: none; transition: all .2s;
+    }
+    .land-nav-links a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .land-nav-links .nav-login {
+      background: var(--blue); color: #fff !important;
+      padding: 7px 16px; border-radius: 6px; font-weight: 600; margin-left: 6px;
+    }
+    .land-nav-links .nav-login:hover { background: #0d47a1; }
+    .homepage {
+      flex: 1; min-height: calc(100vh - 57px);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .home-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(21,101,192,0.85) 0%, rgba(26,43,60,0.80) 60%, rgba(15,37,68,0.88) 100%);
+      pointer-events: none;
+    }
+    .home-content {
+      position: relative; z-index: 2;
+      text-align: center; color: #fff;
+      padding: 60px 20px; max-width: 540px; width: 100%;
+    }
+    .home-content h1 { font-family: 'Lora', serif; font-size: 2rem; margin-bottom: 6px; text-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+    .home-content .subtitle { font-size: 1rem; opacity: .88; margin-bottom: 8px; letter-spacing: .5px; }
+    .home-divider { width: 60px; height: 3px; background: rgba(255,255,255,0.7); margin: 16px auto 24px; border-radius: 2px; }
+    .home-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .home-buttons .btn { min-width: 150px; padding: 13px 24px; font-size: 1rem; border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); }
+    .land-section {
+      background: rgba(8,20,44,0.78);
+      backdrop-filter: blur(8px);
+      padding: 64px 40px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .land-section h2 { font-family: 'Lora', serif; color: #fff; font-size: 1.5rem; margin-bottom: 6px; }
+    .land-section .sec-sub { color: rgba(255,255,255,0.5); font-size: .88rem; margin-bottom: 28px; }
+    .land-ann-list { display: flex; flex-direction: column; gap: 12px; max-width: 680px; }
+    .land-ann-card {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-left: 3px solid var(--gold); border-radius: 8px; padding: 14px 18px;
+    }
+    .land-ann-card strong { color: #fff; font-size: .92rem; }
+    .land-ann-card p { color: rgba(255,255,255,0.62); font-size: .85rem; margin-top: 4px; line-height: 1.55; }
+    .land-ann-card small { color: rgba(255,255,255,0.32); font-size: .76rem; }
+    .about-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(190px,1fr)); gap: 16px; max-width: 760px; }
+    .about-card {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 10px; padding: 20px 18px;
+      color: rgba(255,255,255,0.75); font-size: .88rem; line-height: 1.6;
+    }
+    .about-card .aci { font-size: 1.5rem; margin-bottom: 10px; }
+    .about-card strong { display: block; color: #fff; margin-bottom: 5px; }
+    .contact-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap: 14px; max-width: 580px; }
+    .contact-card {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px; padding: 16px; color: rgba(255,255,255,0.68); font-size: .86rem;
+    }
+    .contact-card strong { display: block; color: #fff; margin-bottom: 4px; }
+    .land-footer {
+      background: rgba(5,12,30,0.92); text-align: center;
+      padding: 22px; color: rgba(255,255,255,0.28); font-size: .78rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .btn {
+      padding: 11px 24px; border: none; border-radius: 6px;
+      font-size: .95rem; font-family: 'Source Sans 3', sans-serif;
+      cursor: pointer; font-weight: 600; text-decoration: none;
+      display: inline-block; text-align: center;
+      transition: background .2s, transform .1s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover { background: #0d47a1; }
+    .btn-gold { background: var(--gold); color: #fff; }
+    .btn-gold:hover { background: #a37808; }
+    .btn-dark { background: #2c3e50; color: #fff; }
+    .btn-dark:hover { background: #1a252f; }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-danger:hover { background: #922b21; }
+    .btn-success { background: #1e7e34; color: #fff; }
+    .btn-sm { padding: 6px 14px; font-size: .85rem; }
+    .card {
+      background: var(--white); border-radius: 10px;
+      padding: 32px 36px; box-shadow: var(--shadow);
+      max-width: 860px; margin: 36px auto; border: 1px solid #e2e8f0;
+    }
+    .card h2 {
+      font-family: 'Lora', serif; color: var(--navy);
+      margin-bottom: 22px; font-size: 1.25rem;
+      border-bottom: 2px solid #dce8f5; padding-bottom: 10px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+    input, textarea, select {
+      padding: 11px 14px; border: 1.5px solid #c8d4dc; border-radius: 6px;
+      font-size: .97rem; font-family: 'Source Sans 3', sans-serif;
+      transition: border .2s; background: #fafdfc; width: 100%;
+    }
+    input:focus, textarea:focus { outline: none; border-color: var(--blue); background: #fff; }
+    textarea { resize: vertical; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    th { background: var(--navy); color: #fff; padding: 11px 14px; text-align: left; font-size: .88rem; }
+    td { padding: 10px 14px; border-bottom: 1px solid #e4eaed; font-size: .93rem; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f4f7fb; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .8rem; font-weight: 600; }
+    .badge-pending  { background: #fff3cd; color: #856404; }
+    .badge-approved { background: #d4efdf; color: #1e6b42; }
+    .badge-rejected { background: #fde8e6; color: #922b21; }
+    .ann-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid #e8eeeb; }
+    .ann-item:last-child { border-bottom: none; }
+    .ann-dot { width: 10px; height: 10px; background: var(--blue); border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+    .ann-item p { font-size: .97rem; line-height: 1.5; }
+    .ann-item small { color: #7f8c8d; font-size: .82rem; }
+    .post-card {
+      background: #f8fbff;
+      border-left: 4px solid var(--blue);
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+    }
+    .post-card strong { color: var(--navy); }
+    .post-card p { margin-top: 6px; font-size: .94rem; color: #444; }
+    .post-card small { color: #999; font-size: .8rem; float: right; }
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 100%);
+      color: #fff; border-radius: 10px; padding: 28px 36px;
+      max-width: 860px; margin: 36px auto 0;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: var(--shadow); border-left: 4px solid rgba(255,255,255,0.3);
+    }
+    .welcome-banner h2 { font-family: 'Lora', serif; font-size: 1.45rem; }
+    .welcome-banner p  { opacity: .8; margin-top: 6px; font-size: .95rem; }
+    .welcome-banner .badge-icon {
+      background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.4);
+      color: #fff; padding: 10px 18px; border-radius: 8px;
+      font-family: 'Lora', serif; font-weight: 700; white-space: nowrap;
+    }
+    .quick-links {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px; max-width: 860px; margin: 22px auto 0;
+    }
+    .quick-link-btn {
+      background: var(--white); border: 2px solid #dce8f5;
+      border-radius: 10px; padding: 22px 16px; text-align: center;
+      text-decoration: none; display: block; transition: all .2s;
+    }
+    .quick-link-btn:hover { border-color: var(--blue); box-shadow: 0 4px 14px rgba(21,101,192,.15); transform: translateY(-2px); }
+    .quick-link-btn .ql-icon { font-size: 1.6rem; margin-bottom: 10px; color: var(--blue); }
+    .quick-link-btn span { display: block; font-weight: 600; color: var(--navy); font-size: .95rem; }
+    .auth-wrap {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #e8f0fb 0%, #f4f0e8 100%); padding: 30px 16px;
+    }
+    .auth-box {
+      background: var(--white); border-radius: 12px; padding: 44px 48px;
+      box-shadow: 0 8px 32px rgba(21,101,192,0.12);
+      width: 100%; max-width: 420px; text-align: center; border-top: 4px solid var(--blue);
+    }
+    .auth-box.wide { max-width: 480px; }
+    .lock-icon {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, var(--blue), var(--navy));
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px; color: #fff; font-size: 1.3rem;
+    }
+    .auth-box h2 { font-family: 'Lora', serif; color: var(--navy); margin-bottom: 24px; }
+    .auth-box input { margin-bottom: 14px; }
+    .auth-box .btn { width: 100%; margin-top: 6px; }
+    .back-link {
+      display: inline-block; margin-top: 18px; font-size: .88rem;
+      color: var(--blue); text-decoration: underline; text-align: center; width: 100%;
+    }
+    .alert { padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: .9rem; display: none; }
+    .alert-success { background: #d4efdf; color: #1e6b42; border-left: 4px solid #27ae60; }
+    .alert-error   { background: #fde8e6; color: #922b21; border-left: 4px solid var(--red); }
+    .alert.show { display: block; }
+    @media (max-width: 600px) {
+      .card { padding: 20px 16px; margin: 18px 10px; }
+      .welcome-banner { flex-direction: column; gap: 12px; padding: 22px 20px; margin: 18px 10px 0; }
+      .quick-links { margin: 14px 10px 0; }
+      .auth-box { padding: 28px 20px; }
+      .home-content h1 { font-size: 1.5rem; }
+      .land-nav { padding: 14px 20px; }
+      .land-nav-links a:not(.nav-login) { display: none; }
+      .land-section { padding: 48px 20px; }
+      #appNav { top: 62px; }
+    }
+  </style>
+</head>
+<body>
+
+<header id="appHeader">
+  <div class="header-brand">
+    <img class="header-logo" src="logo.png" alt="D-99 Logo"/>
+    <h1>Dorotea 99'ers <small>Barangay Management System</small></h1>
+  </div>
+</header>
+
+<nav id="appNav">
+  <a href="#" onclick="showPage('dashboard')">Dashboard</a>
+  <a href="#" onclick="showPage('announcements')">Announcements</a>
+  <a href="#" onclick="showPage('forum')">Forum</a>
+  <a href="#" onclick="showPage('clearance')">Request Clearance</a>
+  <a href="#" onclick="showPage('my-clearances')">My Requests</a>
+  <a href="#" class="logout" onclick="adminLogout();showPage('home')">Logout</a>
+</nav>
+
+<section id="home" class="page">
+  <nav class="land-nav">
+    <div class="land-nav-brand">
+      <img class="land-nav-logo" src="logo.png" alt="D-99"/>
+      <div class="land-nav-title">Dorotea 99'ers <small>Barangay 99, Caloocan City</small></div>
+    </div>
+    <div class="land-nav-links">
+      <a href="#sec-home">Home</a>
+      <a href="#sec-ann">Announcements</a>
+      <a href="#sec-about">About Us</a>
+      <a href="#sec-contact">Contact Us</a>
+      <a class="nav-login" href="#" onclick="showPage('login')">Login</a>
+    </div>
+  </nav>
+  <div class="homepage" id="sec-home">
+    <div class="home-overlay"></div>
+    <div class="home-content">
+      <h1>Dorotea 99'ers</h1>
+      <p class="subtitle">Barangay 99 &ndash; Management System</p>
+      <div class="home-divider"></div>
+      <div class="home-buttons">
+        <a class="btn btn-gold" href="#" onclick="showPage('register')">Register</a>
+        <a class="btn btn-primary" href="#" onclick="showPage('login')">Resident Login</a>
+        <a class="btn btn-dark" href="#" onclick="showPage('admin-login')">Admin Login</a>
+      </div>
+    </div>
+  </div>
+  <div class="land-section" id="sec-ann">
+    <h2>Barangay Announcements</h2>
+    <p class="sec-sub">Latest updates from Barangay 99</p>
+    <div class="land-ann-list">
+      <div class="land-ann-card"><strong>Clean-up Drive</strong><p>Join us this March 10, 2026 for a community clean-up. Bring gloves and wear comfortable clothes.</p><small>Posted: March 1, 2026</small></div>
+      <div class="land-ann-card"><strong>Free Medical Check-up</strong><p>Available to all residents on March 15, 2026 at the Barangay Hall from 8AM&ndash;12PM.</p><small>Posted: March 2, 2026</small></div>
+      <div class="land-ann-card"><strong>Barangay Assembly Meeting</strong><p>All residents are invited to attend the quarterly assembly on March 20, 2026.</p><small>Posted: March 3, 2026</small></div>
+    </div>
+  </div>
+  <div class="land-section" id="sec-about">
+    <h2>About Us</h2>
+    <p class="sec-sub">Dorotea 99'ers Barangay Management System</p>
+    <div class="about-grid">
+      <div class="about-card"><div class="aci">&#127968;</div><strong>Our Barangay</strong>Barangay 99 serves the residents of Caloocan City with dedication and community-driven governance.</div>
+      <div class="about-card"><div class="aci">&#128187;</div><strong>This System</strong>Developed by BSCS-1A students of the University of Caloocan City to modernize barangay services.</div>
+      <div class="about-card"><div class="aci">&#128101;</div><strong>Our Goal</strong>Reduce paperwork, speed up clearance processing, and keep residents informed and connected.</div>
+    </div>
+  </div>
+  <div class="land-section" id="sec-contact">
+    <h2>Contact Us</h2>
+    <p class="sec-sub">Reach out to Barangay 99</p>
+    <div class="contact-grid">
+      <div class="contact-card"><strong>&#128205; Address</strong>Barangay 99, Caloocan City, Metro Manila</div>
+      <div class="contact-card"><strong>&#128222; Phone</strong>(02) 8XXX-XXXX</div>
+      <div class="contact-card"><strong>&#128336; Office Hours</strong>Mon&ndash;Fri, 8:00 AM &ndash; 5:00 PM</div>
+    </div>
+  </div>
+  <div class="land-footer">&copy; 2026 Dorotea 99'ers &mdash; Barangay 99, Caloocan City &mdash; BSCS-1A, University of Caloocan City</div>
+</section>
+
+<section id="register" class="page">
+  <div class="auth-wrap">
+    <div class="auth-box wide">
+      <h2>Resident Registration</h2>
+      <div id="reg-alert" class="alert"></div>
+      <input type="text" id="regName" placeholder="Full Name"/>
+      <input type="text" id="regUsername" placeholder="Username"/>
+      <input type="password" id="regPassword" placeholder="Password"/>
+      <input type="text" id="regAddress" placeholder="Address"/>
+      <button class="btn btn-primary" onclick="registerResident()">Create Account</button>
+      <a class="back-link" href="#" onclick="showPage('home')">Back to Home</a>
+    </div>
+  </div>
+</section>
+
+<section id="login" class="page">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="lock-icon">&#128274;</div>
+      <h2>Resident Login</h2>
+      <div id="login-alert" class="alert"></div>
+      <input type="text" id="loginUsername" placeholder="Username"/>
+      <input type="password" id="loginPassword" placeholder="Password"/>
+      <button class="btn btn-primary" onclick="residentLogin()">Login</button>
+      <a class="back-link" href="#" onclick="showPage('home')">Back to Home</a>
+    </div>
+  </div>
+</section>
+
+<section id="admin-login" class="page">
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div class="lock-icon">&#128737;</div>
+      <h2>Admin Login</h2>
+      <div id="admin-login-alert" class="alert"></div>
+      <input type="text" id="adminUsername" placeholder="Username"/>
+      <input type="password" id="adminPassword" placeholder="Password"/>
+      <button class="btn btn-primary" onclick="adminLogin()">Login</button>
+      <a class="back-link" href="#" onclick="showPage('home')">Back to Home</a>
+    </div>
+  </div>
+</section>
+
+<section id="dashboard" class="page">
+  <div class="welcome-banner">
+    <div>
+      <h2>Welcome back, <span id="welcomeUser">Resident</span></h2>
+      <p>What would you like to do today?</p>
+    </div>
+    <div class="badge-icon">D-99</div>
+  </div>
+  <div class="quick-links">
+    <a class="quick-link-btn" href="#" onclick="showPage('announcements')"><div class="ql-icon">&#128226;</div><span>Announcements</span></a>
+    <a class="quick-link-btn" href="#" onclick="showPage('forum')"><div class="ql-icon">&#128172;</div><span>Community Forum</span></a>
+    <a class="quick-link-btn" href="#" onclick="showPage('clearance')"><div class="ql-icon">&#128196;</div><span>Request Clearance</span></a>
+    <a class="quick-link-btn" href="#" onclick="showPage('my-clearances')"><div class="ql-icon">&#128269;</div><span>My Requests</span></a>
+  </div>
+</section>
+
+<section id="announcements" class="page">
+  <div class="card">
+    <h2>Barangay Announcements</h2>
+    <div class="ann-item"><div class="ann-dot"></div><div><p><strong>Clean-up Drive</strong> &ndash; Join us this March 10, 2026 for a community clean-up. Bring gloves and wear comfortable clothes.</p><small>Posted: March 1, 2026</small></div></div>
+    <div class="ann-item"><div class="ann-dot"></div><div><p><strong>Free Medical Check-up</strong> &ndash; Available to all residents on March 15, 2026 at the Barangay Hall from 8AM&ndash;12PM.</p><small>Posted: March 2, 2026</small></div></div>
+    <div class="ann-item"><div class="ann-dot"></div><div><p><strong>Barangay Assembly Meeting</strong> &ndash; All residents are invited to attend the quarterly assembly on March 20, 2026.</p><small>Posted: March 3, 2026</small></div></div>
+  </div>
+</section>
+
+<section id="forum" class="page">
+  <div class="card">
+    <h2>Community Forum</h2>
+    <div id="forum-alert" class="alert"></div>
+    <div class="form-group">
+      <input type="text" id="forumSubject" placeholder="Subject / Topic"/>
+      <textarea id="forumMessage" rows="4" placeholder="Write your concern, suggestion, or feedback..."></textarea>
+      <button class="btn btn-primary" style="align-self:flex-start;" onclick="postForum()">Post</button>
+    </div>
+    <hr style="margin:22px 0; border-color:#e4eaed;">
+    <h3 style="font-family:'Lora',serif; color:var(--navy); margin-bottom:16px;">Recent Posts</h3>
+    <div id="forumDisplay"></div>
+  </div>
+</section>
+
+<section id="clearance" class="page">
+  <div class="card">
+    <h2>Request Barangay Clearance</h2>
+    <div id="clearance-alert" class="alert"></div>
+    <div class="form-group">
+      <input type="text" id="clearName" placeholder="Full Name"/>
+      <input type="text" id="clearPurpose" placeholder="Purpose (e.g. Employment, Travel)"/>
+      <button class="btn btn-primary" style="align-self:flex-start;" onclick="requestClearance()">Submit Request</button>
+    </div>
+  </div>
+</section>
+
+<section id="my-clearances" class="page">
+  <div class="card">
+    <h2>My Clearance Requests</h2>
+    <div id="myClearanceTable"></div>
+  </div>
+</section>
+
+<section id="admin" class="page">
+  <div class="card">
+    <h2>Admin &ndash; Clearance Requests</h2>
+    <table>
+      <thead><tr><th>Full Name</th><th>Purpose</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody id="requestTable"></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>Registered Residents</h2>
+    <table>
+      <thead><tr><th>Full Name</th><th>Username</th><th>Address</th></tr></thead>
+      <tbody id="residentTable"></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>Forum Posts</h2>
+    <div id="adminForumDisplay"></div>
+  </div>
+</section>
+
+<script>
+function showPage(id) {
+  var pages = document.querySelectorAll('.page');
+  for (var i = 0; i < pages.length; i++) pages[i].style.display = 'none';
+  var target = document.getElementById(id);
+  if (!target) return;
+  target.style.display = (id === 'home') ? 'flex' : 'block';
+  var inner = ['dashboard','announcements','forum','clearance','my-clearances','admin'];
+  var isInner = inner.indexOf(id) !== -1;
+  document.getElementById('appHeader').style.display = isInner ? 'flex' : 'none';
+  document.getElementById('appNav').style.display    = isInner ? 'flex' : 'none';
+  window.scrollTo(0, 0);
+  if (id === 'forum') loadForum();
+  if (id === 'my-clearances') loadMyClearances();
+  if (id === 'admin') loadAdmin();
+}
+
+function getData(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || []; }
+  catch(e) { return []; }
+}
+function setData(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+function showAlert(id, msg, type) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'alert alert-' + (type || 'success') + ' show';
+  el.textContent = msg;
+  setTimeout(function() { el.classList.remove('show'); }, 4000);
+}
+
+function registerResident() {
+  var name     = document.getElementById('regName').value.trim();
+  var username = document.getElementById('regUsername').value.trim();
+  var password = document.getElementById('regPassword').value;
+  var address  = document.getElementById('regAddress').value.trim();
+  if (!name || !username || !password || !address)
+    return showAlert('reg-alert', 'Please fill in all fields.', 'error');
+  var residents = getData('residents');
+  for (var i = 0; i < residents.length; i++)
+    if (residents[i].username === username)
+      return showAlert('reg-alert', 'Username already taken.', 'error');
+  residents.push({ name: name, username: username, password: password, address: address });
+  setData('residents', residents);
+  showAlert('reg-alert', 'Registration successful! You can now login.', 'success');
+  document.getElementById('regName').value = '';
+  document.getElementById('regUsername').value = '';
+  document.getElementById('regPassword').value = '';
+  document.getElementById('regAddress').value = '';
+}
+
+function residentLogin() {
+  var username = document.getElementById('loginUsername').value.trim();
+  var password = document.getElementById('loginPassword').value;
+  var residents = getData('residents');
+  var user = null;
+  for (var i = 0; i < residents.length; i++)
+    if (residents[i].username === username && residents[i].password === password) { user = residents[i]; break; }
+  if (!user) return showAlert('login-alert', 'Invalid username or password.', 'error');
+  localStorage.setItem('loggedInUser', JSON.stringify(user));
+  document.getElementById('welcomeUser').textContent = user.name;
+  showPage('dashboard');
+}
+
+function adminLogin() {
+  var username = document.getElementById('adminUsername').value.trim();
+  var password = document.getElementById('adminPassword').value;
+  if (username === 'admin' && password === 'admin123') {
+    localStorage.setItem('adminLoggedIn', 'true');
+    showPage('admin');
+  } else {
+    showAlert('admin-login-alert', 'Invalid admin credentials.', 'error');
+  }
+}
+
+function adminLogout() {
+  localStorage.removeItem('adminLoggedIn');
+  localStorage.removeItem('loggedInUser');
+}
+
+function postForum() {
+  var subject = document.getElementById('forumSubject').value.trim();
+  var message = document.getElementById('forumMessage').value.trim();
+  if (!subject || !message) return showAlert('forum-alert', 'Please fill in both fields.', 'error');
+  var user = JSON.parse(localStorage.getItem('loggedInUser'));
+  var posts = getData('forumPosts');
+  posts.unshift({
+    subject: subject, message: message,
+    author: user ? user.name : 'Anonymous',
+    date: new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
+  });
+  setData('forumPosts', posts);
+  document.getElementById('forumSubject').value = '';
+  document.getElementById('forumMessage').value = '';
+  showAlert('forum-alert', 'Post submitted!', 'success');
+  loadForum();
+}
+
+function loadForum() {
+  var display = document.getElementById('forumDisplay');
+  if (!display) return;
+  var posts = getData('forumPosts');
+  var seeded = [
+    { subject: 'Road Concern', message: 'Streetlight in Zone 2 is not working. Please have it fixed.', author: 'Resident', date: 'Mar 1, 2026' },
+    { subject: 'Suggestion',   message: 'Add more garbage bins near the basketball court.',             author: 'Resident', date: 'Mar 2, 2026' }
+  ];
+  var all = posts.concat(seeded);
+  var html = '';
+  for (var i = 0; i < all.length; i++) {
+    var p = all[i];
+    html += '<div class="post-card"><strong>' + esc(p.subject) + '</strong>'
+          + '<small>' + esc(p.author) + ' &middot; ' + p.date + '</small>'
+          + '<p>' + esc(p.message) + '</p></div>';
+  }
+  display.innerHTML = html || '<p style="color:#888;">No posts yet.</p>';
+}
+
+function requestClearance() {
+  var name    = document.getElementById('clearName').value.trim();
+  var purpose = document.getElementById('clearPurpose').value.trim();
+  if (!name || !purpose) return showAlert('clearance-alert', 'Please fill in all fields.', 'error');
+  var user = JSON.parse(localStorage.getItem('loggedInUser'));
+  var requests = getData('clearanceRequests');
+  requests.push({
+    fullname: name, purpose: purpose, status: 'Pending',
+    requestedBy: user ? user.username : 'unknown',
+    date: new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
+  });
+  setData('clearanceRequests', requests);
+  document.getElementById('clearName').value = '';
+  document.getElementById('clearPurpose').value = '';
+  showAlert('clearance-alert', 'Request submitted! Check My Requests for status.', 'success');
+}
+
+function loadMyClearances() {
+  var el = document.getElementById('myClearanceTable');
+  if (!el) return;
+  var user = JSON.parse(localStorage.getItem('loggedInUser'));
+  var all = getData('clearanceRequests');
+  var mine = [];
+  for (var i = 0; i < all.length; i++)
+    if (!user || all[i].requestedBy === user.username) mine.push(all[i]);
+  if (mine.length === 0) { el.innerHTML = '<p style="color:#888;margin-top:8px;">No clearance requests yet.</p>'; return; }
+  var html = '<table><thead><tr><th>Full Name</th><th>Purpose</th><th>Date</th><th>Status</th></tr></thead><tbody>';
+  for (var i = 0; i < mine.length; i++) {
+    var r = mine[i];
+    var cls = r.status === 'Approved' ? 'approved' : (r.status === 'Rejected' ? 'rejected' : 'pending');
+    html += '<tr><td>' + esc(r.fullname) + '</td><td>' + esc(r.purpose) + '</td><td>' + (r.date || '—') + '</td>'
+          + '<td><span class="badge badge-' + cls + '">' + r.status + '</span></td></tr>';
+  }
+  el.innerHTML = html + '</tbody></table>';
+}
+
+function loadAdmin() {
+  loadAdminRequests();
+  loadAdminResidents();
+  loadAdminForum();
+}
+
+function loadAdminRequests() {
+  var tbody = document.getElementById('requestTable');
+  if (!tbody) return;
+  var requests = getData('clearanceRequests');
+  if (requests.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;">No requests yet.</td></tr>'; return; }
+  var html = '';
+  for (var i = 0; i < requests.length; i++) {
+    var r = requests[i];
+    var cls = r.status === 'Approved' ? 'approved' : (r.status === 'Rejected' ? 'rejected' : 'pending');
+    var action = r.status === 'Pending'
+      ? '<button class="btn btn-success btn-sm" onclick="updateRequest(' + i + ',\'Approved\')" style="margin-right:5px;">Approve</button>'
+        + '<button class="btn btn-danger btn-sm" onclick="updateRequest(' + i + ',\'Rejected\')">Reject</button>'
+      : '<span style="font-weight:600;">' + r.status + '</span>';
+    html += '<tr><td>' + esc(r.fullname) + '</td><td>' + esc(r.purpose) + '</td><td>' + (r.date || '—') + '</td>'
+          + '<td><span class="badge badge-' + cls + '">' + r.status + '</span></td><td>' + action + '</td></tr>';
+  }
+  tbody.innerHTML = html;
+}
+
+function updateRequest(index, status) {
+  var requests = getData('clearanceRequests');
+  requests[index].status = status;
+  setData('clearanceRequests', requests);
+  loadAdminRequests();
+}
+
+function loadAdminResidents() {
+  var tbody = document.getElementById('residentTable');
+  if (!tbody) return;
+  var residents = getData('residents');
+  if (residents.length === 0) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#888;">No registered residents yet.</td></tr>'; return; }
+  var html = '';
+  for (var i = 0; i < residents.length; i++) {
+    var r = residents[i];
+    html += '<tr><td>' + esc(r.name) + '</td><td>' + esc(r.username) + '</td><td>' + esc(r.address) + '</td></tr>';
+  }
+  tbody.innerHTML = html;
+}
+
+function loadAdminForum() {
+  var el = document.getElementById('adminForumDisplay');
+  if (!el) return;
+  var posts = getData('forumPosts');
+  if (posts.length === 0) { el.innerHTML = '<p style="color:#888;">No user posts yet.</p>'; return; }
+  var html = '';
+  for (var i = 0; i < posts.length; i++) {
+    var p = posts[i];
+    html += '<div class="post-card">'
+          + '<button class="btn btn-danger btn-sm" style="float:right;" onclick="deletePost(' + i + ')">Delete</button>'
+          + '<strong>' + esc(p.subject) + '</strong>'
+          + '<small style="display:block;margin-top:2px;color:#aaa;">' + esc(p.author) + ' &middot; ' + p.date + '</small>'
+          + '<p>' + esc(p.message) + '</p></div>';
+  }
+  el.innerHTML = html;
+}
+
+function deletePost(index) {
+  var posts = getData('forumPosts');
+  posts.splice(index, 1);
+  setData('forumPosts', posts);
+  loadAdminForum();
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+(function() {
+  showPage('home');
+})();
+</script>
+</body>
+</html>
